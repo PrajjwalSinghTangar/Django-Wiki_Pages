@@ -1,0 +1,34 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Create New Wiki
+{% endblock %}
+
+{% block head %}
+    <style>
+        .mytitleclass {
+            width:80vw;
+            margin-bottom:20px;
+        }
+        .mycontentclass {
+            width:80vw;
+            height:auto;
+            padding-bottom:20%;
+            
+        }
+    </style>
+{% endblock  %}
+
+
+{% block body %}
+    <h1>CREATE NEW PAGE</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <h3>TITLE:</h3>
+        {{title}}
+        <h3>BODY:</h3>
+        {{body}}
+        <button type="submit">Create!</button>
+    </form>
+
+{% endblock %}
