@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from . import util
 from django import forms
-
+from random import randrange
+import markdown2
 
 ## Search Class
 class search_form(forms.Form):
@@ -60,16 +61,16 @@ def wiki(request, title):
     else:
         return render(request, "encyclopedia/pages.html",{
             "title": title.upper(),
-            "body": util.get_entry(title),
+            "body": markdown2.markdown(util.get_entry(title)),
             "form": search_form()
         })
 
 ## Create New Page
 
 def newpage(request):
-    titleform = title_form(request.POST)
-    contentform = content_form(request.POST)
     if request.method == "POST":
+        titleform = title_form(request.POST)
+        contentform = content_form(request.POST)
         if titleform.is_valid():
             querytitle = titleform.cleaned_data["title"]
         if contentform.is_valid():
@@ -88,3 +89,33 @@ def newpage(request):
             "body": content_form(),
             "form": search_form()
     })
+
+## Edit
+
+def edit(request,title):
+    if request.method == "GET":
+        initial_text = util.get_entry(title)
+        return render(request, "encyclopedia/edit.html", {
+            "form": search_form(),
+            "text_to_edit": content_form(initial={'initial_text':initial_text}),
+            "title":title
+        })
+
+    else:
+        contentform = content_form(request.POST)
+        if contentform.is_valid():
+            content = contentform.cleaned_data["content"]
+
+            util.save_entry(title, content)
+
+            return wiki(request, title)
+
+## Random
+
+def random(request):
+    #1 Finding total length of entries
+    #2 Making a range from 1 to len(entries)
+    #3 Invoking util.list_entries() function and using randrange
+    #4 example: util.list_entries()[2] => util.list_entries()[randrange(len(util.list_entries()))]
+    random_item = util.list_entries()[randrange(len(util.list_entries()))]
+    return wiki(request, random_item)

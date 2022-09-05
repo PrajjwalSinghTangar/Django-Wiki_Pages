@@ -8,7 +8,9 @@
     <h1>{{title}}</h1>
 
     <ul>
-        {{body}}
+        {{body|safe}}
     </ul>
-
+        <a href='/edit/{{title}}'>
+            <button>EDIT THIS PAGE!</button>
+        </a>
 {% endblock %}
